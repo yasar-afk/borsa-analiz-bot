@@ -139,46 +139,69 @@ class V7PriceActionStrategy:
             # BULLISH giriş
             if last_bull_idx != -1 and i - last_bull_idx <= self.max_hold_sweep:
                 if c > max(closes[i-1], closes[i-2], closes[i-3]):
-                    if c > ema_val:
-                        # Hacim filtresi
-                        if self.use_volume_filter and vol_ratio < self.volume_threshold:
+                    # Hacim filtresi
+                    if self.use_volume_filter and vol_ratio < self.volume_threshold:
+                        continue
+
+                    # Premium/Discount
+                    if self.use_premium_discount:
+                        s_h = swing_highs[last_bull_idx]
+                        s_l = swing_lows[last_bull_idx]
+                        zone = get_premium_discount_zone(c, s_h, s_l)
+                        if zone != "DISCOUNT":
                             continue
 
-                        # Premium/Discount
-                        if self.use_premium_discount:
-                            s_h = swing_highs[last_bull_idx]
-                            s_l = swing_lows[last_bull_idx]
-                            zone = get_premium_discount_zone(c, s_h, s_l)
-                            if zone != "DISCOUNT":
+                    sl = last_bull_low - (atr_val * self.atr_multiplier)
+                    risk = c - sl
+                    if risk > 0:
+                        sl_pct = risk / c
+                        if sl_pct < self.min_sl_pct:
+                            continue
+                        if sl_pct > self.max_sl_pct:
+                            sl = c * (1 - self.max_sl_pct)
+                            risk = c - sl
+                            if risk <= 0:
                                 continue
-
-                        sl = last_bull_low - (atr_val * self.atr_multiplier)
-                        risk = c - sl
-                        if risk > 0:
-                            sl_pct = risk / c
-                            if sl_pct < self.min_sl_pct:
-                                continue
-                            if sl_pct > self.max_sl_pct:
-                                sl = c * (1 - self.max_sl_pct)
-                                risk = c - sl
-                                if risk <= 0:
-                                    continue
-                            tp = c + (self.target_rr * risk)
-                            # TP çok uzak mı kontrol et
-                            tp_pct = (tp - c) / c
-                            if tp_pct > self.max_tp_pct:
-                                tp = c * (1 + self.max_tp_pct)
-                            if tp <= 0: continue
-                            signals[i] = "BUY"
-                            entry_prices[i] = c
-                            sl_prices[i] = sl
-                            tp_prices[i] = tp
-                            last_bull_idx = -1
+                        tp = c + (self.target_rr * risk)
+                        # TP çok uzak mı kontrol et
+                        tp_pct = (tp - c) / c
+                        if tp_pct > self.max_tp_pct:
+                            tp = c * (1 + self.max_tp_pct)
+                        if tp <= 0: continue
+                        signals[i] = "BUY"
+                        entry_prices[i] = c
+                        sl_prices[i] = sl
+                        tp_prices[i] = tp
+                        last_bull_idx = -1
 
             # BEARISH giriş
             elif last_bear_idx != -1 and i - last_bear_idx <= self.max_hold_sweep:
                 if c < min(closes[i-1], closes[i-2], closes[i-3]):
-                    if c < ema_val:
+                    if self.use_volume_filter and vol_ratio < self.volume_threshold:
+                        continue
+
+                    sl = last_bear_high + (atr_val * self.atr_multiplier)
+                    risk = sl - c
+                    if risk > 0:
+                        sl_pct = risk / c
+                        if sl_pct < self.min_sl_pct:
+                            continue
+                        if sl_pct > self.max_sl_pct:
+                            sl = c * (1 + self.max_sl_pct)
+                            risk = sl - c
+                            if risk <= 0:
+                                continue
+                        tp = c - (self.target_rr * risk)
+                        # TP çok uzak mı kontrol et
+                        tp_pct = (c - tp) / c
+                        if tp_pct > self.max_tp_pct:
+                            tp = c * (1 - self.max_tp_pct)
+                        if tp <= 0: continue
+                        signals[i] = "SELL"
+                        entry_prices[i] = c
+                        sl_prices[i] = sl
+                        tp_prices[i] = tp
+                        last_bear_idx = -1
                         if self.use_volume_filter and vol_ratio < self.volume_threshold:
                             continue
 

@@ -6,15 +6,15 @@
 # ─── Strateji Ayarları ────────────────────────────────────────
 strategy:
   version: "v7"
-  sweep_window: 100
-  max_hold_sweep: 7
-  target_rr: 5.5
-  trend_ema: 180
-  atr_multiplier: 0.6
+  sweep_window: 50
+  max_hold_sweep: 5
+  target_rr: 4.0
+  trend_ema: 100
+  atr_multiplier: 0.5
   use_volume_filter: true
-  volume_threshold: 0.5
-  min_volatility_pct: 0.3
-  use_premium_discount: true
+  volume_threshold: 0.2
+  min_volatility_pct: 0.15
+  use_premium_discount: false
   max_tp_pct: 0.50
   min_sl_pct: 0.02
   max_sl_pct: 0.08
