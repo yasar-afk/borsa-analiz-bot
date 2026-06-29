@@ -1,0 +1,105 @@
+# config.yaml — Mimo AI Merkezi Konfigürasyon Dosyası
+
+data:
+  path: "data/historical_1y_15m_all/"
+  timeframe: "15m"
+  candles_per_hour: 4
+  candles_per_day: 96
+  coins:
+    - BTCUSDT
+    - ETHUSDT
+    - SOLUSDT
+    - BNBUSDT
+    - XRPUSDT
+    - WLDUSDT
+    - ZECUSDT
+    - HYPEUSDT
+    - SYNUSDT
+    - HEIUSDT
+    - BICOUSDT
+    - LABUSDT
+    - XAUUSDT
+    - XAGUSDT
+    - BEATUSDT
+    - SPCXUSDT
+    - BSBUSDT
+    - CLUSDT
+    - REUSDT
+    - SKHYNIXUSDT
+  min_rows_required: 1000
+  base_coin: "BTCUSDT"
+
+features:
+  window_size: 50
+  target_horizon: 4
+  direction_threshold: 0.003
+  normalization_window: 100
+
+  groups:
+    momentum: true
+    trend: true
+    volatility: true
+    volume: true
+    candle_structure: true
+    derivative: true
+    cross_coin: true
+    time_encoding: true
+
+model:
+  type: "multi_head"
+  lstm_hidden: 128
+  n_attention_heads: 4
+  transformer_d_model: 64
+  dropout: 0.3
+  batch_size: 64
+  max_epochs: 200
+  patience: 20
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  loss_weights:
+    direction: 0.5
+    price: 0.3
+    volatility: 0.2
+
+training:
+  walk_forward:
+    train_months: 6
+    test_months: 1
+  seed: 42
+  device: "auto"  # "cpu", "cuda", veya "auto"
+
+regime:
+  n_clusters: 4
+  method: "hmm"
+  hmm_iterations: 200
+  features:
+    - realized_vol
+    - volume_zscore
+    - btc_return
+    - oi_pct_change
+    - adx_14
+    - funding_zscore
+
+hyperopt:
+  n_trials: 200
+  timeout: 3600
+  objective: "sharpe"
+  study_name: "mimo_ai_study"
+
+online_learning:
+  enabled: true
+  interval_days: 7
+  finetune_lr_factor: 0.1
+  finetune_epochs: 10
+  rollback_on_degradation: true
+
+kelly:
+  enabled: true
+  fraction: 0.5
+  max_position_pct: 0.10
+  min_confidence: 0.55
+
+reporting:
+  output_dir: "reports/"
+  save_plots: true
+  plot_format: "png"
