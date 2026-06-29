@@ -160,7 +160,7 @@ class SignalGenerator:
         if hasattr(self, '_strategy_version'):
             strategy_version = self._strategy_version
 
-        if strategy_version in ("v3", "v4", "v5"):
+        if strategy_version in ("v3", "v4", "v5", "v6", "v7"):
             pa_sig = getattr(indicator_set, "pa_signal", "HOLD")
             if pa_sig in ("BUY", "SELL"):
                 from src.signal.models import SignalType as ST, SignalStrength
