@@ -1,43 +1,102 @@
-# 🤖 trading-bot V7 — Kripto Trading Botu
+<div align="center">
 
-Binance Futures üzerinde otomatik alım-satım yapan, MiMo v2.5 AI ile grafik tabanlı sinyal doğrulaması yapan gelişmiş trading sistemi.
+# 🤖 Borsa Analiz Bot — V7
+
+### Autonomous Crypto Trading with AI-Powered Chart Verification
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/downloads/)
 ![AI](https://img.shields.io/badge/AI-MiMo%20v2.5-FF6700?style=for-the-badge)
-[![Binance](https://img.shields.io/badge/Binance-F0B90B?style=for-the-badge&logo=binance&logoColor=black)](https://www.binance.com/)
+[![Binance](https://img.shields.io/badge/Binance-Futures-F0B90B?style=for-the-badge&logo=binance&logoColor=black)](https://www.binance.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-## ✨ Özellikler
+</div>
 
-| Modül | Açıklama | Durum |
-|-------|----------|-------|
-| 📊 **V7 Strategy** | Price Action + SMC Liquidity Sweep | ✅ |
-| 🤖 **AI Verification** | MiMo v2.5 grafik doğrulama | ✅ |
-| 🧠 **Adaptive Learning** | Günlük otomatik öğrenme | ✅ |
-| 🎯 **Risk Management** | Drawdown, trailing stop | ✅ |
-| 📱 **Telegram Bot** | Bildirimler ve komutlar | ✅ |
-| 📊 **Backtest** | Geçmiş verilerle test | ✅ |
+---
 
-## 🚀 Hızlı Başlangıç
+## ✨ Features
 
-### Kurulum
+<table>
+<tr>
+<td width="50%">
+
+### 📊 V7 Strategy Engine
+- **Price Action + SMC** Liquidity Sweep
+- **Multi-timeframe** confirmation (15m, 1h, 4h)
+- **Adaptive parameters** based on market regime
+- **ATR-based** dynamic stop-loss
+
+</td>
+<td width="50%">
+
+### 🤖 AI Verification
+- **MiMo v2.5** chart analysis
+- **Visual pattern** recognition
+- **Risk assessment** before execution
+- **Continuous learning** from outcomes
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+### 🛡️ Risk Management
+- **Max 10** concurrent positions
+- **2% risk** per trade
+- **5% daily** drawdown limit
+- **Trailing stop** protection
+
+</td>
+<td width="50%">
+
+### 📱 Telegram Integration
+- **Real-time** notifications
+- **Portfolio** monitoring
+- **Remote commands** for control
+- **Trade alerts** with AI reasoning
+
+</td>
+</tr>
+</table>
+
+---
+
+## 📈 Performance
+
+<div align="center">
+
+| Metric | Value |
+|--------|-------|
+| 🚀 Starting Capital | $10,000 |
+| 💰 Current Value | $16,323 |
+| 📈 Total Return | **+63.2%** |
+| 📊 Status | Active (Paper Trading) |
+
+</div>
+
+---
+
+## 🚀 Quick Start
+
+### Installation
 
 ```bash
-# 1. Depoyu klonla
+# 1. Clone the repository
 git clone https://github.com/yasar-afk/borsa-analiz-bot.git
 cd borsa-analiz-bot
 
-# 2. Sanal ortam oluştur
+# 2. Create virtual environment
 python -m venv venv
-venv\Scripts\activate
+venv\Scripts\activate  # Windows
+# source venv/bin/activate  # Linux/Mac
 
-# 3. Bağımlılıkları yükle
+# 3. Install dependencies
 pip install -r requirements.txt
 
-# 4. Konfigürasyon
+# 4. Configure environment
 cp .env.example .env
 ```
 
-### .env Dosyası
+### Environment Variables
 
 ```env
 BINANCE_API_KEY=your_api_key
@@ -47,179 +106,162 @@ TELEGRAM_BOT_TOKEN=your_bot_token
 TELEGRAM_CHAT_ID=your_chat_id
 ```
 
-### Çalıştırma
+### Run
 
 ```bash
-# Paper trading (varsayılan)
+# Paper trading (safe mode)
 python live_v7.py
 
-# Canlı borsa
+# Live trading (real money!)
 python live_v7.py --live
 
-# Tüm botları çalıştır
+# Run all bot versions
 python run_all_bots.py
 ```
 
-## 📊 Strateji (V7)
+---
 
-### Price Action — SMC Liquidity Sweep Reversal
+## 🧠 Strategy Overview
 
-```
-100 mum swing high/low tarama
-        ↓
-EMA(180) trend filtresi
-        ↓
-ATR bazlı Stop-Loss (0.6x ATR)
-        ↓
-Dinamik RR (ADX >25 → 4.0, ADX 15-25 → 3.0)
-        ↓
-Multi-TF konfirmasyon (15m + 1h + 4h)
-```
-
-### Parametreler
-
-| Parametre | Değer |
-|-----------|-------|
-| Sweep Window | 100 mum |
-| Trend EMA | 180 periyot |
-| ATR Çarpanı | 0.6x |
-| Min SL | %2 |
-| Max SL | %8 |
-| Min Volatilite | %0.3 |
-| Kaldıraç | 5x izole |
-
-## 🤖 AI Entegrasyonu (MiMo v2.5)
-
-### Giriş Doğrulama
-```
-Mum grafiği oluştur → RSI, ADX, EMA, Hacim hesapla
-        ↓
-MiMo'ya grafik + indikatörler gönder
-        ↓
-TRADE / SKIP karar
-```
-
-### Pozisyon İnceleme
-- Her saat açık pozisyonlar MiMo tarafından incelenir
-- HOLD / CLOSE / PARTIAL_CLOSE kararları
-- %10 PnL: Otomatik CLOSE
-- Boş reason: Otomatik CLOSE
-
-### Hata Yönetimi
-- **FAIL-CLOSE**: AI hata verince sinyal reddedilir
-- **Reason validasyonu**: Boş/kısa reason otomatik SKIP/CLOSE
-
-## 🛡️ Risk Yönetimi
-
-| Parametre | Değer |
-|-----------|-------|
-| Max pozisyon | 10 |
-| Pozisyon riski | %2 |
-| Günlük drawdown | %5 |
-| Kaldıraç | 5x izole |
-| Komisyon | %0.063 |
-| Cooldown | 24 saat |
-| Arka arkaya kayıp | 2. → %50, 3. → %25 |
-| Blacklist | 2+ kayıpta anında, 3+ kalıcı |
-
-## 📱 Telegram Komutları
+### V7: Price Action + SMC Liquidity Sweep
 
 ```
-/durum    - Bot durumu
-/status   - Açık pozisyonlar
-/portfoy  - Portföy özeti
-/pozisyon - Detaylı pozisyon bilgisi
-/acik     - Açık pozisyon listesi
+┌─────────────────────────────────────────────────────────────┐
+│  100-candle swing high/low detection                        │
+│         ↓                                                   │
+│  EMA(180) trend filter                                      │
+│         ↓                                                   │
+│  ATR-based Stop-Loss (0.6x ATR)                            │
+│         ↓                                                   │
+│  Dynamic Risk:Reward (ADX >25 → 4.0, ADX 15-25 → 3.0)    │
+│         ↓                                                   │
+│  Multi-TF confirmation (15m + 1h + 4h)                     │
+│         ↓                                                   │
+│  🤖 MiMo AI Chart Verification                             │
+│         ↓                                                   │
+│  ✅ EXECUTE / ❌ SKIP                                       │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-## 📁 Proje Yapısı
+### Parameters
 
-```
-borsa-analiz-bot/
-├── live_v7.py              # V7 ana bot
-├── live_v5.py              # V5 bot
-├── live_v65.py             # V6.5 Mean Reversion
-├── run_all_bots.py         # Tümünü çalıştır
-├── config_v7.yaml          # V7 ayarları
-├── config.yaml             # Ana konfigürasyon
-├── requirements.txt        # Bağımlılıklar
-├── setup.py                # pip kurulum
-│
-├── src/                    # Kaynak kodları
-│   ├── strategy/           # Strateji modülleri
-│   │   ├── v7_pa_strategy.py
-│   │   ├── ai_chart_verifier.py
-│   │   ├── adaptive_learner.py
-│   │   └── regime_detector.py
-│   ├── risk/               # Risk yönetimi
-│   ├── data/               # Veri çekme
-│   └── utils/              # Yardımcı fonksiyonlar
-│
-├── data/                   # Fiyat verileri
-├── logs/                   # İşlem logları
-└── tests/                  # Test dosyaları
-```
-
-## 🔧 Konfigürasyon
-
-```yaml
-# config_v7.yaml
-strategy:
-  sweep_window: 100
-  trend_ema: 180
-  atr_multiplier: 0.6
-  min_sl_pct: 0.02
-  max_sl_pct: 0.08
-
-risk:
-  max_position_pct: 0.02
-  max_daily_drawdown_pct: 0.05
-  min_risk_reward_ratio: 3.0
-
-execution:
-  leverage: 5
-  margin_mode: ISOLATED
-```
-
-## 🧪 Backtest
-
-```bash
-# V7 backtest
-python backtest_v7.py
-
-# Kapsamlı analiz
-python analyze_v7_comprehensive.py
-```
-
-## 📊 Performans
-
-| Metrik | Değer |
-|--------|-------|
-| Başlangıç | $10,000 |
-| Güncel | $16,323 |
-| Kâr | %+63.2 |
-| Durum | Aktif (Paper Trading) |
-
-## 🛠️ Teknoloji Stack
-
-| Kategori | Teknoloji |
-|----------|-----------|
-| **Dil** | Python 3.10+ |
-| **Borsa** | Binance Futures (ccxt) |
-| **AI** | MiMo v2.5 (Xiaomi) |
-| **ML** | Scikit-learn, HMM |
-| **Bildirim** | Telegram Bot |
-| **Veri** | Pandas, NumPy |
-| **Grafik** | Matplotlib |
-
-## ⚠️ Uyarı
-
-Bu bot yatırım tavsiyesi değildir. Kripto para birimleri yüksek risk taşır. Paper trading ile test edin.
-
-## 📝 Lisans
-
-MIT License
+| Parameter | Value | Description |
+|-----------|-------|-------------|
+| `sweep_window` | 100 | Candles to scan for swing points |
+| `trend_ema` | 180 | Trend filter period |
+| `atr_multiplier` | 0.6 | Stop-loss ATR multiplier |
+| `min_sl_pct` | 2% | Minimum stop-loss |
+| `max_sl_pct` | 8% | Maximum stop-loss |
+| `leverage` | 5x | Position leverage (isolated) |
 
 ---
 
-**trading-bot V7** — MiMoCode tarafından geliştirildi 🚀
+## 🛡️ Risk Management
+
+| Rule | Value | Action |
+|------|-------|--------|
+| Max Positions | 10 | Block new trades |
+| Position Risk | 2% | Per-trade allocation |
+| Daily Drawdown | 5% | Stop trading |
+| Consecutive Losses | 2 → 50%, 3 → 25% | Reduce size |
+| Blacklist | 2+ loss → immediate, 3+ → permanent | Block symbol |
+
+---
+
+## 📱 Telegram Commands
+
+```
+/durum    → Bot status & uptime
+/status   → Open positions
+/portfoy  → Portfolio summary
+/pozisyon → Detailed position info
+/acik     → List all open trades
+```
+
+---
+
+## 📁 Project Structure
+
+```
+borsa-analiz-bot/
+├── live_v7.py              # V7 main bot (Price Action + SMC)
+├── live_v5.py              # V5 bot (Mean Reversion)
+├── live_v65.py             # V6.5 hybrid strategy
+├── run_all_bots.py         # Run all versions
+│
+├── config_v7.yaml          # V7 configuration
+├── config.yaml             # Global configuration
+├── requirements.txt        # Dependencies
+├── setup.py                # Package setup
+│
+├── src/
+│   ├── strategy/           # Trading strategies
+│   │   ├── v7_pa_strategy.py      # Price Action engine
+│   │   ├── ai_chart_verifier.py   # MiMo AI verification
+│   │   ├── adaptive_learner.py    # Self-learning module
+│   │   └── regime_detector.py     # Market regime detection
+│   ├── risk/               # Risk management
+│   │   └── engine.py              # Position sizing & limits
+│   ├── data/               # Data fetching
+│   └── utils/              # Utilities
+│       ├── telegram_notifier.py   # Telegram alerts
+│       ├── ai_analyzer.py         # AI analysis tools
+│       └── chart_reader.py        # Chart visualization
+│
+├── backtest_v7.py          # Backtesting engine
+├── analyze_v7_comprehensive.py  # Performance analysis
+└── tests/                  # Test suite
+```
+
+---
+
+## 🧪 Backtesting
+
+```bash
+# Run V7 backtest
+python backtest_v7.py
+
+# Comprehensive analysis
+python analyze_v7_comprehensive.py
+
+# Compare all strategies
+python compare_3bots.py
+```
+
+---
+
+## 🛠️ Tech Stack
+
+| Category | Technologies |
+|----------|--------------|
+| **Language** | Python 3.10+ |
+| **AI/ML** | MiMo v2.5, PyTorch, Scikit-learn, XGBoost, HMM |
+| **Trading** | Binance Futures, ccxt |
+| **Visualization** | Matplotlib, Plotly, mplfinance |
+| **Notifications** | Telegram Bot API |
+| **Data** | Pandas, NumPy, TA-Lib |
+| **Optimization** | Optuna, SHAP |
+
+---
+
+## ⚠️ Disclaimer
+
+> **This bot is NOT financial advice.** Cryptocurrency trading carries high risk. 
+> Always test with paper trading first. Never invest more than you can afford to lose.
+
+---
+
+## 📝 License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+
+---
+
+<div align="center">
+
+**Built with ❤️ by [Yaşar TÜZEN](https://github.com/yasar-afk)**
+
+[![LinkedIn](https://img.shields.io/badge/Connect-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/yasar-afk)
+[![Email](https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:yasar.tuzen.eng@gmail.com)
+
+</div>

@@ -1,10 +1,14 @@
-# API anahtarlari
+# Environment & Secrets
 .env
+.env.local
+.env.*.local
+*.env
 
 # Python
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
+*$py.class
+*.so
 .Python
 build/
 develop-eggs/
@@ -21,11 +25,13 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+MANIFEST
 
-# Virtual environment
+# Virtual Environment
 venv/
 env/
 .venv/
+ENV/
 
 # IDE
 .vscode/
@@ -33,16 +39,65 @@ env/
 *.swp
 *.swo
 *~
+.project
+.settings/
+.classpath
 
 # OS
 .DS_Store
 Thumbs.db
+ehthumbs.db
+Desktop.ini
 
 # Logs
 logs/
+*.log
 
 # Data
 data/
+*.csv
+*.json
+!config*.yaml
 
-# Scratch
+# Scratch & Notes
 scratch/
+notes/
+tmp/
+temp/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# mypy
+.mypy_cache/
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# conda
+environment.yml
+
+# Models (large files)
+*.pt
+*.pth
+*.onnx
+*.h5
+*.pkl
+
+# Backups
+*.bak
+*.backup
+*~
