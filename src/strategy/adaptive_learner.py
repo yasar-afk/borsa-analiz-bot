@@ -220,18 +220,18 @@ class AdaptiveLearner:
             if overall_wr > 0.30 and current_params["risk_pct"] < 0.02:
                 new_risk = min(current_params["risk_pct"] + 0.002, 0.02)
                 if new_risk != current_params["risk_pct"]:
-                    changes.append(f"Risk artırıldı: %{current_params['risk_pct']*100:.1f} → %{new_risk*100:.1f} (WR>%30)")
+                    changes.append(f"Risk arttirildi: %{current_params['risk_pct']*100:.1f} -> %{new_risk*100:.1f} (WR>%30)")
                     current_params["risk_pct"] = new_risk
 
             elif overall_wr < 0.18 and current_params["risk_pct"] > 0.005:
                 new_risk = max(current_params["risk_pct"] - 0.002, 0.005)
                 if new_risk != current_params["risk_pct"]:
-                    changes.append(f"Risk azaltıldı: %{current_params['risk_pct']*100:.1f} → %{new_risk*100:.1f} (WR<%18)")
+                    changes.append(f"Risk azaltildi: %{current_params['risk_pct']*100:.1f} -> %{new_risk*100:.1f} (WR<%18)")
                     current_params["risk_pct"] = new_risk
 
-        # Kötü coin'leri黒liste al
+        # Kotu coin'leri kara liste al
         if self.state["worst_symbols"]:
-            changes.append(f"黒liste: {len(self.state['worst_symbols'])} coin askıya alındı")
+            changes.append(f"Kara liste: {len(self.state['worst_symbols'])} coin askiya alindi")
 
         # ─── 3. Parametre geçmişini kaydet ────────────────
         self.state["param_history"].append({
@@ -245,7 +245,7 @@ class AdaptiveLearner:
         # ─── 4. Versiyon güncelle ─────────────────────────
         if changes:
             new_version = self._increment_version()
-            changes.insert(0, f"Versiyon: {self.version} → {new_version}")
+            changes.insert(0, f"Versiyon: {self.version} -> {new_version}")
 
         self.state["current_params"] = current_params
         self.state["last_optimization"] = now.isoformat()
