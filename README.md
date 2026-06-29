@@ -1,4 +1,4 @@
-# 🤖 Antigraviti V7 — Kripto Trading Botu
+# 🤖 trading-bot V7 — Kripto Trading Botu
 
 Binance Futures üzerinde otomatik alım-satım yapan, MiMo v2.5 AI ile grafik tabanlı sinyal doğrulaması yapan gelişmiş trading sistemi.
 
@@ -222,4 +222,4 @@ MIT License
 
 ---
 
-**Antigraviti V7** — MiMoCode tarafından geliştirildi 🚀
+**trading-bot V7** — MiMoCode tarafından geliştirildi 🚀
