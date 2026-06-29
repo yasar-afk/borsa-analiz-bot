@@ -17,6 +17,11 @@ from src.utils.logger import get_logger
 logger = get_logger(__name__)
 
 
+def _escape_html(text: str) -> str:
+    """HTML karakterlerini escape et."""
+    return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
 def send_telegram_notification(message: str) -> None:
     """Onemli olaylari Telegram'a bildirir."""
     import sys
@@ -25,7 +30,7 @@ def send_telegram_notification(message: str) -> None:
 
     try:
         cfg = get_settings()
-        
+
         import os
         if os.getenv("TELEGRAM_ENABLED", "true").lower() == "false":
             return
@@ -38,6 +43,11 @@ def send_telegram_notification(message: str) -> None:
 
         if "your_telegram_bot" in token or "your_telegram_chat" in chat_id:
             return
+
+        message = _escape_html(message)
+
+        if len(message) > 4000:
+            message = message[:4000] + "\n... (kesildi)"
 
         url = f"https://api.telegram.org/bot{token}/sendMessage"
         data = urllib.parse.urlencode({
