@@ -88,18 +88,14 @@ class LiveV7Bot:
 
         self.fetcher = HistoricalDataFetcher()
         self.strategy = V7PriceActionStrategy(
-            sweep_window=strat_cfg.get("sweep_window", 100),
-            max_hold_sweep=strat_cfg.get("max_hold_sweep", 7),
-            target_rr=strat_cfg.get("target_rr", 3.0),
-            trend_ema=strat_cfg.get("trend_ema", 180),
-            atr_multiplier=strat_cfg.get("atr_multiplier", 0.6),
-            use_volume_filter=strat_cfg.get("use_volume_filter", True),
-            volume_threshold=strat_cfg.get("volume_threshold", 0.5),
-            min_volatility_pct=strat_cfg.get("min_volatility_pct", 0.3),
-            use_premium_discount=strat_cfg.get("use_premium_discount", True),
-            max_tp_pct=strat_cfg.get("max_tp_pct", 0.50),
-            min_sl_pct=strat_cfg.get("min_sl_pct", 0.02),
-            max_sl_pct=strat_cfg.get("max_sl_pct", 0.08),
+            ema_fast=strat_cfg.get("ema_fast", 5),
+            ema_slow=strat_cfg.get("ema_slow", 50),
+            rsi_buy_limit=strat_cfg.get("rsi_buy_limit", 65),
+            rsi_sell_limit=strat_cfg.get("rsi_sell_limit", 30),
+            atr_sl_mult=strat_cfg.get("atr_sl_mult", 1.5),
+            atr_tp_mult=strat_cfg.get("atr_tp_mult", 3.0),
+            min_sl_pct=strat_cfg.get("min_sl_pct", 0.01),
+            max_sl_pct=strat_cfg.get("max_sl_pct", 0.06),
         )
         self.regime_detector = RegimeDetector()
         self.balance = initial_capital
