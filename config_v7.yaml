@@ -7,16 +7,16 @@
 strategy:
   version: "v7"
   sweep_window: 50
-  max_hold_sweep: 5
-  target_rr: 4.0
+  max_hold_sweep: 3
+  target_rr: 2.0
   trend_ema: 100
-  atr_multiplier: 0.5
+  atr_multiplier: 0.6
   use_volume_filter: true
-  volume_threshold: 0.2
-  min_volatility_pct: 0.15
+  volume_threshold: 0.15
+  min_volatility_pct: 0.2
   use_premium_discount: false
-  max_tp_pct: 0.50
-  min_sl_pct: 0.02
+  max_tp_pct: 0.30
+  min_sl_pct: 0.01
   max_sl_pct: 0.08
   entry_threshold: 0.65
   exit_threshold: 0.40
