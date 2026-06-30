@@ -6,18 +6,14 @@
 # ─── Strateji Ayarları ────────────────────────────────────────
 strategy:
   version: "v7"
-  sweep_window: 50
-  max_hold_sweep: 3
-  target_rr: 2.0
-  trend_ema: 100
-  atr_multiplier: 0.6
-  use_volume_filter: true
-  volume_threshold: 0.15
-  min_volatility_pct: 0.2
-  use_premium_discount: false
-  max_tp_pct: 0.30
+  ema_fast: 5
+  ema_slow: 50
+  rsi_buy_limit: 65
+  rsi_sell_limit: 30
+  atr_sl_mult: 1.5
+  atr_tp_mult: 3.0
   min_sl_pct: 0.01
-  max_sl_pct: 0.08
+  max_sl_pct: 0.06
   entry_threshold: 0.65
   exit_threshold: 0.40
   max_concurrent_positions: 10

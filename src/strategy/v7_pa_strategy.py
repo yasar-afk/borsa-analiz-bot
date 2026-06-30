@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-src/strategy/v7_pa_strategy.py — V7 Trend Takip Stratejisi
-AI filtreli, optimize edilmis: %53.8 win rate, +21.5% K/Z.
+src/strategy/v7_pa_strategy.py — V7 Optimize Trend Takip Stratejisi
+30 gunluk backtest ile optimize edilmis: EMA 5/50, RSI 65/30.
 """
 import pandas as pd
 import numpy as np
@@ -9,14 +9,23 @@ import numpy as np
 
 class V7PriceActionStrategy:
     """
-    Trading Bot V7 — Trend Takip Stratejisi
+    Trading Bot V7 — Optimize Trend Takip Stratejisi
     
-    EMA Cross (9/21) + RSI + ATR tabanli stop-loss/take-profit
-    AI filtresi ile guclendirilmis
+    EMA Cross (5/50) + RSI + ATR tabanli stop-loss/take-profit
+    30 gunluk backtest ile optimize edilmis parametreler
     """
 
     def __init__(
         self,
+        ema_fast: int = 5,
+        ema_slow: int = 50,
+        rsi_buy_limit: float = 65,
+        rsi_sell_limit: float = 30,
+        atr_sl_mult: float = 1.5,
+        atr_tp_mult: float = 3.0,
+        min_sl_pct: float = 0.01,
+        max_sl_pct: float = 0.06,
+        # Eski parametreler (uyumluluk icin)
         sweep_window: int = 50,
         max_hold_sweep: int = 3,
         target_rr: float = 2.0,
@@ -27,9 +36,16 @@ class V7PriceActionStrategy:
         min_volatility_pct: float = 0.2,
         use_premium_discount: bool = False,
         max_tp_pct: float = 0.30,
-        min_sl_pct: float = 0.01,
-        max_sl_pct: float = 0.08,
     ):
+        self.ema_fast = ema_fast
+        self.ema_slow = ema_slow
+        self.rsi_buy_limit = rsi_buy_limit
+        self.rsi_sell_limit = rsi_sell_limit
+        self.atr_sl_mult = atr_sl_mult
+        self.atr_tp_mult = atr_tp_mult
+        self.min_sl_pct = min_sl_pct
+        self.max_sl_pct = max_sl_pct
+        # Eski parametreler
         self.sweep_window = sweep_window
         self.max_hold_sweep = max_hold_sweep
         self.target_rr = target_rr
@@ -40,17 +56,14 @@ class V7PriceActionStrategy:
         self.min_volatility_pct = min_volatility_pct
         self.use_premium_discount = use_premium_discount
         self.max_tp_pct = max_tp_pct
-        self.min_sl_pct = min_sl_pct
-        self.max_sl_pct = max_sl_pct
 
     def calculate_signals(self, df: pd.DataFrame) -> pd.DataFrame:
-        """V7 sinyallerini hesaplar - Trend Takip Stratejisi."""
+        """V7 sinyallerini hesaplar — Optimize Trend Takip."""
         df = df.copy()
 
         # EMA'lar
-        df['ema9'] = df['close'].ewm(span=9, adjust=False).mean()
-        df['ema21'] = df['close'].ewm(span=21, adjust=False).mean()
-        df['ema100'] = df['close'].ewm(span=100, adjust=False).mean()
+        df['ema_fast'] = df['close'].ewm(span=self.ema_fast, adjust=False).mean()
+        df['ema_slow'] = df['close'].ewm(span=self.ema_slow, adjust=False).mean()
 
         # RSI
         delta = df['close'].diff()
@@ -66,28 +79,21 @@ class V7PriceActionStrategy:
         tr = pd.concat([high_low, high_close, low_close], axis=1).max(axis=1)
         df['atr'] = tr.rolling(window=14).mean()
 
-        # Hacim ortalamasi
-        df['volume_ma'] = df['volume'].rolling(window=50).mean()
-        df['volume_ratio'] = df['volume'] / df['volume_ma']
-
         # Sinyal kolonlari
         df['signal'] = 'HOLD'
         df['entry_price'] = 0.0
         df['sl_price'] = 0.0
         df['tp_price'] = 0.0
 
-        start_idx = 25
+        start_idx = 55
         if start_idx >= len(df):
             return df
 
         closes = df['close'].values
-        highs = df['high'].values
-        lows = df['low'].values
-        ema9 = df['ema9'].values
-        ema21 = df['ema21'].values
+        ema_f = df['ema_fast'].values
+        ema_s = df['ema_slow'].values
         rsi = df['rsi'].values
         atr = df['atr'].values
-        vol_ratio = df['volume_ratio'].values
 
         signals = ['HOLD'] * len(df)
         entry_prices = [0.0] * len(df)
@@ -96,38 +102,41 @@ class V7PriceActionStrategy:
 
         for i in range(start_idx, len(df)):
             c = closes[i]
-            e9 = ema9[i]
-            e21 = ema21[i]
-            prev_e9 = ema9[i-1]
-            prev_e21 = ema21[i-1]
+            e_f = ema_f[i]
+            e_s = ema_s[i]
+            prev_e_f = ema_f[i-1]
+            prev_e_s = ema_s[i-1]
             r = rsi[i]
             a = atr[i]
-            vr = vol_ratio[i] if not pd.isna(vol_ratio[i]) else 1.0
 
-            if pd.isna(e9) or pd.isna(e21) or pd.isna(a) or a == 0:
+            if pd.isna(e_f) or pd.isna(e_s) or pd.isna(a) or a == 0:
                 continue
 
-            # BUY: EMA9 > EMA21 cross + RSI < 70
-            if prev_e9 <= prev_e21 and e9 > e21 and r < 70:
-                sl = c - (a * 1.5)
-                tp = c + (a * 3.0)
+            # BUY: EMA_fast > EMA_slow cross + RSI < limit
+            if prev_e_f <= prev_e_s and e_f > e_s and r < self.rsi_buy_limit:
+                sl = c - (a * self.atr_sl_mult)
+                tp = c + (a * self.atr_tp_mult)
                 risk = c - sl
                 if risk > 0 and (tp - c) / risk >= 2.0:
-                    signals[i] = 'BUY'
-                    entry_prices[i] = c
-                    sl_prices[i] = sl
-                    tp_prices[i] = tp
+                    sl_pct = risk / c
+                    if self.min_sl_pct <= sl_pct <= self.max_sl_pct:
+                        signals[i] = 'BUY'
+                        entry_prices[i] = c
+                        sl_prices[i] = sl
+                        tp_prices[i] = tp
 
-            # SELL: EMA9 < EMA21 cross + RSI > 30
-            elif prev_e9 >= prev_e21 and e9 < e21 and r > 30:
-                sl = c + (a * 1.5)
-                tp = c - (a * 3.0)
+            # SELL: EMA_fast < EMA_slow cross + RSI > limit
+            elif prev_e_f >= prev_e_s and e_f < e_s and r > self.rsi_sell_limit:
+                sl = c + (a * self.atr_sl_mult)
+                tp = c - (a * self.atr_tp_mult)
                 risk = sl - c
                 if risk > 0 and (c - tp) / risk >= 2.0:
-                    signals[i] = 'SELL'
-                    entry_prices[i] = c
-                    sl_prices[i] = sl
-                    tp_prices[i] = tp
+                    sl_pct = risk / c
+                    if self.min_sl_pct <= sl_pct <= self.max_sl_pct:
+                        signals[i] = 'SELL'
+                        entry_prices[i] = c
+                        sl_prices[i] = sl
+                        tp_prices[i] = tp
 
         df['signal'] = signals
         df['entry_price'] = entry_prices
